@@ -24,8 +24,7 @@ namespace ProjectOxfordCamera
         private Timer _timer;
         private Image _copy;
 
-        private Rectangle[] _rectangles;
-        private string[] _indexes;
+        private EmotionAnalysisResult[] _results;
 
         public Form1()
         {
@@ -41,7 +40,7 @@ namespace ProjectOxfordCamera
             {
                 _imageSource.Stop();
             }
-            _rectangles = new Rectangle[0];
+            _results = new EmotionAnalysisResult[0];
             _imageSource = _imageSources[comboBoxMode.Text];
         }
 
@@ -62,22 +61,21 @@ namespace ProjectOxfordCamera
 
         private void PictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
-            for (int i = 0; i < _rectangles.Length; i++)
+            foreach (EmotionAnalysisResult result in _results)
             {
-                Rectangle rectangle = _rectangles[i];
-                if (rectangle.Contains(e.X, e.Y))
+                if (result.Hitbox.Contains(e.X, e.Y))
                 {
-                    MessageBox.Show(_indexes[i]);
+                    MessageBox.Show(string.Join(Environment.NewLine, result.Indexes.Select(p => $"{p.Key}: {p.Value}")));
                 }
             }
         }
 
         private void PictureBox1_Paint(object sender, PaintEventArgs e)
         {
-            if (_rectangles == null) { return; }
+            if (_results == null) { return; }
             using (Pen pen = new Pen(Brushes.Yellow, 2))
             {
-                foreach (Rectangle rectangle in _rectangles)
+                foreach (Rectangle rectangle in _results.Select(r => r.Hitbox))
                 {
 
                     e.Graphics.DrawRectangle(pen, rectangle);
@@ -132,23 +130,28 @@ namespace ProjectOxfordCamera
                         string content = await message.Content.ReadAsStringAsync();
 
                         JArray array = JsonConvert.DeserializeObject<JArray>(content);
-                        List<Rectangle> rectangles = new List<Rectangle>();
-                        List<string> indexes = new List<string>();
+                        List<EmotionAnalysisResult> results = new List<EmotionAnalysisResult>();
+
                         foreach (JObject jobject in array)
                         {
-                            var r = jobject.Value<JObject>("faceRectangle");
-                            rectangles.Add(new Rectangle(r.Value<int>("left"), r.Value<int>("top"), r.Value<int>("width"), r.Value<int>("height")));
-                            var scores = jobject.Value<JObject>("scores");
-                            StringBuilder index = new StringBuilder();
+                            JObject faceRectangle = jobject.Value<JObject>("faceRectangle");
+                            EmotionAnalysisResult result = new EmotionAnalysisResult
+                            {
+                                Hitbox = new Rectangle(
+                                    faceRectangle.Value<int>("left"), 
+                                    faceRectangle.Value<int>("top"), 
+                                    faceRectangle.Value<int>("width"), 
+                                    faceRectangle.Value<int>("height"))
+                            };
+                            JObject scores = jobject.Value<JObject>("scores");
                             foreach (var property in scores.Properties())
                             {
-                                index.AppendLine($"{property.Name}: {property.Value}");
+                                result.Indexes.Add(property.Name, property.Value.Value<float>());
                             }
-                            indexes.Add(index.ToString());
+                            results.Add(result);
                         }
 
-                        _rectangles = rectangles.ToArray();
-                        _indexes = indexes.ToArray();
+                        _results = results.ToArray();
                         pictureBox.Invalidate();
                     }
                 }

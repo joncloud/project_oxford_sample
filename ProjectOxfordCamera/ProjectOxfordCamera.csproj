@@ -87,6 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CaptureFrequency.cs" />
+    <Compile Include="EmotionAnalysisResult.cs" />
     <Compile Include="FileImageSource.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
