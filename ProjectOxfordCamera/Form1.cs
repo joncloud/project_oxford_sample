@@ -138,7 +138,13 @@ namespace ProjectOxfordCamera
                         {
                             var r = jobject.Value<JObject>("faceRectangle");
                             rectangles.Add(new Rectangle(r.Value<int>("left"), r.Value<int>("top"), r.Value<int>("width"), r.Value<int>("height")));
-                            indexes.Add(jobject.Value<JObject>("scores").ToString());
+                            var scores = jobject.Value<JObject>("scores");
+                            StringBuilder index = new StringBuilder();
+                            foreach (var property in scores.Properties())
+                            {
+                                index.AppendLine($"{property.Name}: {property.Value}");
+                            }
+                            indexes.Add(index.ToString());
                         }
 
                         _rectangles = rectangles.ToArray();
