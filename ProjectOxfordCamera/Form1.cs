@@ -43,8 +43,6 @@ namespace ProjectOxfordCamera
             }
             _rectangles = new Rectangle[0];
             _imageSource = _imageSources[comboBoxMode.Text];
-            _imageSource.Start();
-            _timer.Start();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -96,15 +94,11 @@ namespace ProjectOxfordCamera
 
             Image image = _imageSource.Capture(textBoxPath.Text);
             _copy = (Image)image.Clone();
-            //using (Stream stream = _imageSource.Capture(textBoxPath.Text))
-            {
-                //_copy = Image.FromStream(stream);
-
-                pictureBox.Image = image;
-            }
+            pictureBox.Image = image;
 
             if (_imageSource.Frequency == CaptureFrequency.Once)
             {
+                buttonCapture.Text = "Capture";
                 _timer.Stop();
             }
         }
@@ -159,7 +153,24 @@ namespace ProjectOxfordCamera
             }
         }
 
-        
+        private void buttonCapture_Click(object sender, EventArgs e)
+        {
+            if (buttonCapture.Text == "Capture")
+            {
+                if (_imageSource.Frequency == CaptureFrequency.Interval)
+                {
+                    buttonCapture.Text = "Stop";
+                }
+                _imageSource.Start();
+                _timer.Start();
+            }
+            else
+            {
+                buttonCapture.Text = "Capture";
+                _imageSource.Stop();
+                _timer.Stop();
+            }
+        }
 
         private enum CaptureFrequency
         {
@@ -179,13 +190,24 @@ namespace ProjectOxfordCamera
 
         private class FileImageSource : IImageSource
         {
+            private Stream _stream;
+
             public CaptureFrequency Frequency { get { return CaptureFrequency.Once; } }
 
             public Image Capture(string path)
             {
+                if (_stream != null)
+                {
+                    _stream.Dispose();
+                    _stream = null;
+                }
+
                 using (var stream = new FileStream(path, FileMode.Open, FileAccess.ReadWrite))
                 {
-                    return Image.FromStream(stream);
+                    _stream = new MemoryStream();
+                    stream.CopyTo(_stream);
+                    _stream.Seek(0, SeekOrigin.Begin);
+                    return Image.FromStream(_stream);
                 }
             }
 
