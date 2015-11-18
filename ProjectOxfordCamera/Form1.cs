@@ -34,6 +34,17 @@ namespace ProjectOxfordCamera
             pictureBox.MouseUp += PictureBox1_MouseUp;
         }
 
+        private IEnumerable<Control> WorkingControls
+        {
+            get
+            {
+                yield return buttonAnalyze;
+                yield return buttonCapture;
+                yield return comboBoxMode;
+                yield return textBoxPath;
+            }
+        }
+
         private void comboBoxMode_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_imageSource != null)
@@ -103,11 +114,14 @@ namespace ProjectOxfordCamera
 
         private async void buttonAnalyze_Click(object sender, EventArgs e)
         {
+            foreach (Control control in WorkingControls)
+            {
+                control.Enabled = false;
+            }
+            _timer.Stop();
+
             try
             {
-                _timer.Stop();
-
-
                 using (Stream buffer = new MemoryStream())
                 {
                     _copy.Save(buffer, ImageFormat.Jpeg);
@@ -138,9 +152,9 @@ namespace ProjectOxfordCamera
                             EmotionAnalysisResult result = new EmotionAnalysisResult
                             {
                                 Hitbox = new Rectangle(
-                                    faceRectangle.Value<int>("left"), 
-                                    faceRectangle.Value<int>("top"), 
-                                    faceRectangle.Value<int>("width"), 
+                                    faceRectangle.Value<int>("left"),
+                                    faceRectangle.Value<int>("top"),
+                                    faceRectangle.Value<int>("width"),
                                     faceRectangle.Value<int>("height"))
                             };
                             JObject scores = jobject.Value<JObject>("scores");
@@ -159,6 +173,13 @@ namespace ProjectOxfordCamera
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                foreach (Control control in WorkingControls)
+                {
+                    control.Enabled = true;
+                }
             }
         }
 
