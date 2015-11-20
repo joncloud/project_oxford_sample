@@ -136,33 +136,10 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="x64\cudart64_65.dll" />
-    <Content Include="x64\cufft64_65.dll" />
-    <Content Include="x64\cvextern.dll" />
-    <Content Include="x64\nppc64_65.dll" />
-    <Content Include="x64\nppi64_65.dll" />
-    <Content Include="x64\npps64_65.dll" />
-    <Content Include="x64\OpenCL.dll" />
-    <Content Include="x64\opencv_calib3d2410.dll" />
-    <Content Include="x64\opencv_contrib2410.dll" />
-    <Content Include="x64\opencv_core2410.dll" />
-    <Content Include="x64\opencv_features2d2410.dll" />
-    <Content Include="x64\opencv_flann2410.dll" />
-    <Content Include="x64\opencv_gpu2410.dll" />
-    <Content Include="x64\opencv_highgui2410.dll" />
-    <Content Include="x64\opencv_imgproc2410.dll" />
-    <Content Include="x64\opencv_legacy2410.dll" />
-    <Content Include="x64\opencv_ml2410.dll" />
-    <Content Include="x64\opencv_nonfree2410.dll" />
-    <Content Include="x64\opencv_objdetect2410.dll" />
-    <Content Include="x64\opencv_photo2410.dll" />
-    <Content Include="x64\opencv_stitching2410.dll" />
-    <Content Include="x64\opencv_superres2410.dll" />
-    <Content Include="x64\opencv_video2410.dll" />
-    <Content Include="x64\opencv_videostab2410.dll" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>XCOPY /Y /D /Q $(ProjectDir)\..\packages\VDK.EmguCV.x64.2.4.10.1\content\x64\*.dll $(TargetDir)</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
