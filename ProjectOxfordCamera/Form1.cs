@@ -89,6 +89,11 @@ namespace ProjectOxfordCamera
 
         private void PictureBox1_MouseUp(object sender, MouseEventArgs e)
         {
+            if (_results == null)
+            {
+                return;
+            }
+
             foreach (EmotionAnalysisResult result in _results)
             {
                 if (result.Hitbox.Contains(e.X, e.Y))
