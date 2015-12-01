@@ -212,5 +212,31 @@ namespace ProjectOxfordCamera
                 }
             }
         }
+
+        private void buttonLoad_Click(object sender, EventArgs e)
+        {
+            using (OpenFileDialog dialog = new OpenFileDialog())
+            {
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    string json = Path.ChangeExtension(dialog.FileName, ".json");
+                    string png = Path.ChangeExtension(dialog.FileName, ".png");
+
+                    if (!File.Exists(json) && !File.Exists(png))
+                    {
+                        MessageBox.Show("Missing JSON or PNG");
+                        return;
+                    }
+
+                    string contents = File.ReadAllText(json);
+                    _results = JsonConvert.DeserializeObject<EmotionAnalysisResult[]>(contents);
+
+                    _copy = Image.FromFile(png);
+                    pictureBox.Image = (Image)_copy.Clone();
+                    pictureBox.Invalidate();
+                    buttonSave.Enabled = true;
+                }
+            }
+        }
     }
 }
