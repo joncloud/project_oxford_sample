@@ -98,7 +98,7 @@ namespace ProjectOxfordCamera
             {
                 if (result.Hitbox.Contains(e.X, e.Y))
                 {
-                    MessageBox.Show(string.Join(Environment.NewLine, result.Indexes.Select(p => $"{p.Key}: {p.Value}")));
+                    MessageBox.Show(string.Join(Environment.NewLine, result.Indexes.OrderByDescending(p => p.Value).Select(p => $"{p.Key}: {p.Value}")));
                 }
             }
         }
@@ -149,6 +149,8 @@ namespace ProjectOxfordCamera
                 _results = results.ToArray();
                 
                 pictureBox.Invalidate();
+
+                buttonSave.Enabled = true;
             }
             catch (Exception ex)
             {
@@ -191,6 +193,22 @@ namespace ProjectOxfordCamera
                 if (result == DialogResult.OK)
                 {
                     _analyzer = new EmotionAnalyzer(editor.Config);
+                }
+            }
+        }
+
+        private void buttonSave_Click(object sender, EventArgs e)
+        {
+            using (FolderBrowserDialog dialog = new FolderBrowserDialog())
+            {
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    DateTime date = DateTime.Now;
+                    string name = Path.Combine(dialog.SelectedPath, $"{date.Year:0000}{date.Month:00}{date.Day:00}{date.Hour:00}{date.Minute:00}{date.Second:00}");
+
+                    _copy.Save($"{name}.png", ImageFormat.Png);
+                    string results = JsonConvert.SerializeObject(_results);
+                    File.WriteAllText($"{name}.json", results);
                 }
             }
         }
