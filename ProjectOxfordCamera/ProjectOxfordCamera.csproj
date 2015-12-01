@@ -86,7 +86,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppConfig.cs" />
+    <Compile Include="AppConfigStore.cs" />
     <Compile Include="CaptureFrequency.cs" />
+    <Compile Include="ConfigEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ConfigEditor.Designer.cs">
+      <DependentUpon>ConfigEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="EmotionAnalysisResult.cs" />
     <Compile Include="EmotionAnalyzer.cs" />
     <Compile Include="FileImageSource.cs" />
@@ -101,6 +109,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebImageSource.cs" />
+    <EmbeddedResource Include="ConfigEditor.resx">
+      <DependentUpon>ConfigEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

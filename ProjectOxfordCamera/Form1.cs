@@ -25,6 +25,7 @@ namespace ProjectOxfordCamera
         private Image _copy;
 
         private EmotionAnalysisResult[] _results;
+        private EmotionAnalyzer _analyzer;
 
         public Form1()
         {
@@ -68,6 +69,22 @@ namespace ProjectOxfordCamera
             
             _timer = new Timer { Interval = 300 };
             _timer.Tick += timer_Tick;
+
+            AppConfigStore store = new AppConfigStore();
+            AppConfig config = store.Load();
+            if (string.IsNullOrWhiteSpace(config.OxfordSubscriptionKey))
+            {
+                buttonConfig_Click(sender, e);
+                if (_analyzer == null)
+                {
+                    MessageBox.Show("Settings are required.");
+                    Environment.Exit(1);
+                }
+            }
+            else
+            {
+                _analyzer = new EmotionAnalyzer(config);
+            }
         }
 
         private void PictureBox1_MouseUp(object sender, MouseEventArgs e)
@@ -122,9 +139,7 @@ namespace ProjectOxfordCamera
 
             try
             {
-                EmotionAnalyzer analyzer = new EmotionAnalyzer();
-
-                IEnumerable<EmotionAnalysisResult> results = await analyzer.AnalyzeAsync(_copy);
+                IEnumerable<EmotionAnalysisResult> results = await _analyzer.AnalyzeAsync(_copy);
 
                 _results = results.ToArray();
                 
@@ -159,6 +174,19 @@ namespace ProjectOxfordCamera
                 buttonCapture.Text = "Capture";
                 _imageSource.Stop();
                 _timer.Stop();
+            }
+        }
+
+        private void buttonConfig_Click(object sender, EventArgs e)
+        {
+            using (ConfigEditor editor = new ConfigEditor())
+            {
+                DialogResult result = editor.ShowDialog();
+
+                if (result == DialogResult.OK)
+                {
+                    _analyzer = new EmotionAnalyzer(editor.Config);
+                }
             }
         }
     }

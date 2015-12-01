@@ -14,6 +14,13 @@ namespace ProjectOxfordCamera
 {
     public class EmotionAnalyzer
     {
+        private AppConfig _config;
+
+        public EmotionAnalyzer(AppConfig config)
+        {
+            _config = config;
+        }
+
         public async Task<IEnumerable<EmotionAnalysisResult>> AnalyzeAsync(Image image)
         {
             List<EmotionAnalysisResult> results = new List<EmotionAnalysisResult>();
@@ -26,7 +33,7 @@ namespace ProjectOxfordCamera
                 using (HttpClient client = new HttpClient())
                 {
                     client.BaseAddress = new Uri("https://api.projectoxford.ai/emotion/v1.0/");
-                    client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", "");
+                    client.DefaultRequestHeaders.Add("Ocp-Apim-Subscription-Key", _config.OxfordSubscriptionKey);
 
                     var requestContent = new StreamContent(buffer);
 
