@@ -29,9 +29,9 @@
         private void InitializeComponent()
         {
             this.textBoxApiKey = new System.Windows.Forms.TextBox();
-            this.labelApiKey = new System.Windows.Forms.Label();
             this.buttonOK = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.linkLabelApiKey = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
             // textBoxApiKey
@@ -42,15 +42,6 @@
             this.textBoxApiKey.Name = "textBoxApiKey";
             this.textBoxApiKey.Size = new System.Drawing.Size(255, 20);
             this.textBoxApiKey.TabIndex = 0;
-            // 
-            // labelApiKey
-            // 
-            this.labelApiKey.AutoSize = true;
-            this.labelApiKey.Location = new System.Drawing.Point(12, 15);
-            this.labelApiKey.Name = "labelApiKey";
-            this.labelApiKey.Size = new System.Drawing.Size(48, 13);
-            this.labelApiKey.TabIndex = 1;
-            this.labelApiKey.Text = "API Key:";
             // 
             // buttonOK
             // 
@@ -75,6 +66,16 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // linkLabelApiKey
+            // 
+            this.linkLabelApiKey.AutoSize = true;
+            this.linkLabelApiKey.Location = new System.Drawing.Point(12, 15);
+            this.linkLabelApiKey.Name = "linkLabelApiKey";
+            this.linkLabelApiKey.Size = new System.Drawing.Size(48, 13);
+            this.linkLabelApiKey.TabIndex = 4;
+            this.linkLabelApiKey.Text = "API Key:";
+            this.linkLabelApiKey.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelApiKey_LinkClicked);
+            // 
             // ConfigEditor
             // 
             this.AcceptButton = this.buttonOK;
@@ -82,9 +83,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.button2;
             this.ClientSize = new System.Drawing.Size(332, 83);
+            this.Controls.Add(this.linkLabelApiKey);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.buttonOK);
-            this.Controls.Add(this.labelApiKey);
             this.Controls.Add(this.textBoxApiKey);
             this.Name = "ConfigEditor";
             this.Text = "ConfigEditor";
@@ -97,8 +98,8 @@
         #endregion
 
         private System.Windows.Forms.TextBox textBoxApiKey;
-        private System.Windows.Forms.Label labelApiKey;
         private System.Windows.Forms.Button buttonOK;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.LinkLabel linkLabelApiKey;
     }
 }
